@@ -6,6 +6,8 @@ import Glide, {
 } from "@glidejs/glide/dist/glide.modular.esm";
 import shave from "shave";
 
+import PostCard from "./PostCard";
+
 const RelatedPosts = ({ posts }) => {
   useEffect(() => {
     if (posts?.length > 0) {
@@ -74,8 +76,17 @@ const RelatedPosts = ({ posts }) => {
           <div className="m-recommended-slider glide js-recommended-slider">
             <div className="glide__track" data-glide-el="track">
               <div className="glide__slides">
-                <div className="m-recommended-slider__item glide__slide">
-                  {posts?.length > 0 ? null : (
+                {posts?.length > 0 ? (
+                  posts.map(({ node: post }) => (
+                    <div
+                      key={post.fields.slug}
+                      className="m-recommended-slider__item glide__slide"
+                    >
+                      <PostCard post={post} />
+                    </div>
+                  ))
+                ) : (
+                  <div className="m-recommended-slider__item glide__slide">
                     <header className="m-heading no-margin">
                       <h3>
                         {/* {{t "No posts found"}} */}
@@ -87,8 +98,8 @@ const RelatedPosts = ({ posts }) => {
                         later.
                       </p>
                     </header>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
             {posts?.length > 1 && (

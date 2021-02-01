@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useMemo, Fragment } from "react";
 import { graphql, Link } from "gatsby";
 
-import Tippy from "@tippyjs/react";
 import { useInView } from "react-intersection-observer";
 import { DiscussionEmbed } from "disqus-react";
 import { GatsbySeo } from "gatsby-plugin-next-seo";
 
-import PageProgressButton from "../../components/PageProgressButton";
-import HeroImage from "../../components/HeroImage";
-import Layout from "../../components/Layout";
-import RelatedPosts from "../../components/RelatedPosts";
+import PageProgressButton from "../components/PageProgressButton";
+import HeroImage from "../components/HeroImage";
+import Layout from "../components/Layout";
+import RelatedPosts from "../components/RelatedPosts";
+import TooltipWrapper from "../components/TooltipWrapper";
 
 import "prism-themes/themes/prism-darcula.css";
-import "../../styles/post.scss";
+import "../styles/post.scss";
 
 const loadPolyfills = async () => {
   if (typeof window.IntersectionObserver === "undefined") {
@@ -23,7 +23,7 @@ const loadPolyfills = async () => {
 const Post = (props) => {
   const { data, location } = props;
 
-  const { post } = data;
+  const { post, relatedPosts } = data;
 
   const { tags, authors, published_at, feature_image } = post.frontmatter;
 
@@ -54,7 +54,7 @@ const Post = (props) => {
 
   const title = post.frontmatter.title;
 
-  const disqusShortName = process.env.GATSBY_DISQUS_NAME || "geekscreed";
+  const disqusShortName = process.env.GATSBY_DISQUS_NAME;
 
   const disqusConfig = useMemo(
     () => ({
@@ -200,7 +200,6 @@ const Post = (props) => {
                 <div className="m-author__info">
                   <h4 className="m-author__name">
                     <Link to={`/author/${primary_author.id}`}>
-                      {" "}
                       {primary_author.name}
                     </Link>
                   </h4>
@@ -282,14 +281,14 @@ const Post = (props) => {
               <section className="m-comments">
                 <div className={`m-load-comments ${showComment ? "hide" : ""}`}>
                   <div className="m-load-comments__line"></div>
-                  <Tippy content="Load comments">
+                  <TooltipWrapper content="Load comments">
                     <button
                       className="m-icon-button filled as-load-comments js-tooltip js-load-comments"
                       onClick={handleLoadCommentsClick}
                     >
                       <span className="icon-comments"></span>
                     </button>
-                  </Tippy>
+                  </TooltipWrapper>
                 </div>
 
                 <div
@@ -310,7 +309,7 @@ const Post = (props) => {
               </section>
             )}
 
-            <RelatedPosts posts={null} />
+            <RelatedPosts posts={relatedPosts?.edges} />
           </div>
         </article>
       </main>
@@ -321,8 +320,8 @@ const Post = (props) => {
 export default Post;
 
 export const query = graphql`
-  query BlogPostBySlug($id: String!) {
-    post: markdownRemark(id: { eq: $id }) {
+  query BlogPostBySlug($slug: String!, $tags: [String]) {
+    post: markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug
       }
@@ -346,14 +345,32 @@ export const query = graphql`
         feature_image {
           childImageSharp {
             gatsbyImageData(
-              maxWidth: 720
-              layout: FLUID
+              width: 720
+              layout: CONSTRAINED
               placeholder: DOMINANT_COLOR
             )
           }
         }
       }
       html
+    }
+    relatedPosts: allMarkdownRemark(
+      sort: { order: DESC, fields: [frontmatter___published_at] }
+      limit: 3
+      filter: {
+        fields: { slug: { ne: $slug } }
+        frontmatter: {
+          tags: { elemMatch: { id: { in: $tags } } }
+          draft: { ne: true }
+        }
+      }
+    ) {
+      totalCount
+      edges {
+        node {
+          ...PostCard
+        }
+      }
     }
   }
 `;

@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import { Link } from "gatsby";
-import Tippy from "@tippyjs/react";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
+
+import TooltipWrapper from "./TooltipWrapper";
 
 const PostCard = (props) => {
   const { post } = props;
@@ -66,23 +67,23 @@ const PostCard = (props) => {
           className="m-article-card__author js-tooltip"
           aria-label={primary_author.name}
         >
-          <Tippy content={`Posted by ${primary_author.name}`}>
-            <Fragment>
-              {/* data-tippy-content="{{t "Posted by"}} {{primary_author.name}} {{authors autolink="false" from="2" prefix=(t "Among with") separator=" , "}}" */}
-              {/* {{#if primary_author.profile_image}} */}
-              {/* {{else}} */}
-              {/* <div style="background-image: url({{asset "images/default-avatar-square-small.jpg"}});"></div> */}
-              {/* {{/if}} */}
-              <div
-                style={{
-                  backgroundImage: `url(${
-                    primary_author.profile_image ||
-                    "/assets/images/default-avatar-square-small.jpg"
-                  })`,
-                }}
-              />
-            </Fragment>
-          </Tippy>
+          <Fragment>
+            {/* data-tippy-content="{{t "Posted by"}} {{primary_author.name}} {{authors autolink="false" from="2" prefix=(t "Among with") separator=" , "}}" */}
+            {/* {{#if primary_author.profile_image}} */}
+            {/* {{else}} */}
+            {/* <div style="background-image: url({{asset "images/default-avatar-square-small.jpg"}});"></div> */}
+            {/* {{/if}} */}
+          </Fragment>
+          <TooltipWrapper content={`Posted by ${primary_author.name}`}>
+            <div
+              style={{
+                backgroundImage: `url(${
+                  primary_author.profile_image ||
+                  "/assets/images/default-avatar-square-small.jpg"
+                })`,
+              }}
+            />
+          </TooltipWrapper>
         </Link>
         {featured && (
           <Link

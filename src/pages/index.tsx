@@ -54,8 +54,8 @@ export const query = graphql`
     coverImage: file(relativePath: { eq: "images/cover-image.jpg" }) {
       childImageSharp {
         gatsbyImageData(
-          maxWidth: 2000
-          layout: FLUID
+          width: 2000
+          layout: CONSTRAINED
           placeholder: DOMINANT_COLOR
           quality: 100
         )

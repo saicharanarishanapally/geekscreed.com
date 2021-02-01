@@ -9,6 +9,8 @@ import Glide, {
   Breakpoints,
 } from "@glidejs/glide/dist/glide.modular.esm";
 
+import TooltipWrapper from "./TooltipWrapper";
+
 const SITE_LOGO = "../../content/assets/images/logo.png";
 
 const Header = (props) => {
@@ -49,8 +51,8 @@ const Header = (props) => {
               feature_image {
                 childImageSharp {
                   gatsbyImageData(
-                    maxWidth: 300
-                    layout: FLUID
+                    width: 300
+                    layout: CONSTRAINED
                     placeholder: BLURRED
                   )
                 }
@@ -204,7 +206,11 @@ const Header = (props) => {
                           >
                             <div className="m-recent-article__picture {{#unless feature_image}}no-picture{{/unless}}">
                               {featureImage ? (
-                                <GatsbyImage alt="" image={featureImage} />
+                                <GatsbyImage
+                                  alt=""
+                                  loading="lazy"
+                                  image={featureImage}
+                                />
                               ) : (
                                 <img
                                   src="images/no-image.png"
@@ -336,19 +342,19 @@ const Header = (props) => {
                       </Link>
                     </li>
                   )}
-                  {navigation?.map(({ node: navigationItem }, index) => (
-                    <li
-                      key={index}
-                      className="nav-{{slug}}{{#if current}} nav-current{{/if}}"
-                    >
-                      <Link to={navigationItem.url}>
-                        {" "}
-                        {navigationItem.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {navigation?.length > 0 &&
+                    navigation.map(({ node: navigationItem }, index) => (
+                      <li
+                        key={index}
+                        className="nav-{{slug}}{{#if current}} nav-current{{/if}}"
+                      >
+                        <Link to={navigationItem.url}>
+                          {navigationItem.label}
+                        </Link>
+                      </li>
+                    ))}
                   {secondaryNavigation?.length > 0 && (
-                    <Tippy
+                    <TooltipWrapper
                       arrow
                       interactive
                       appendTo={() => document.body}
@@ -390,7 +396,7 @@ const Header = (props) => {
                           </a>
                         </span>
                       </li>
-                    </Tippy>
+                    </TooltipWrapper>
                   )}
 
                   {SUB_MENU}
@@ -402,7 +408,7 @@ const Header = (props) => {
               aria-label="{{t "Open search"}}"
               <span className="icon-search" aria-hidden="true"></span>
               </button> */}
-                <Tippy content="Toggle dark mode">
+                <TooltipWrapper content="Toggle dark mode">
                   <div className="m-toggle-darkmode js-tooltip" tabIndex={0}>
                     {/* data-tippy-content="{{t "Toggle dark mode"}}" */}
                     <label htmlFor="toggle-darkmode" className="sr-only">
@@ -427,7 +433,7 @@ const Header = (props) => {
                       ></span>
                     </div>
                   </div>
-                </Tippy>
+                </TooltipWrapper>
               </div>
             </div>
           </div>

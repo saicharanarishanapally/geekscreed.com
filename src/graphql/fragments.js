@@ -14,8 +14,8 @@ export const PostCardFragment = graphql`
       feature_image {
         childImageSharp {
           gatsbyImageData(
-            maxWidth: 600
-            layout: FLUID
+            width: 600
+            layout: CONSTRAINED
             placeholder: DOMINANT_COLOR
             outputPixelDensities: [1]
             webpOptions: { quality: 35 }
