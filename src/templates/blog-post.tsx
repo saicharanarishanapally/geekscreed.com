@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo, Fragment } from "react";
 import { graphql, Link } from "gatsby";
+import { Helmet } from "react-helmet";
+import { getImage } from "gatsby-plugin-image";
 
 import { useInView } from "react-intersection-observer";
 import { DiscussionEmbed } from "disqus-react";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
 
 import PageProgressButton from "../components/PageProgressButton";
 import HeroImage from "../components/HeroImage";
@@ -23,7 +24,9 @@ const loadPolyfills = async () => {
 const Post = (props) => {
   const { data, location } = props;
 
-  const { post, relatedPosts } = data;
+  const { post, relatedPosts, site } = data;
+
+  const { siteUrl } = site.siteMetadata;
 
   const { tags, authors, published_at, feature_image } = post.frontmatter;
 
@@ -73,21 +76,27 @@ const Post = (props) => {
     });
   };
 
+  const imageData = getImage(post.frontmatter.feature_image);
+
   return (
     <Layout title={title}>
-      <GatsbySeo
-        canonical={url}
-        twitter={{
-          cardType: "summary_large_image",
-          handle: primary_author.twitter && `@${primary_author.twitter}`,
-        }}
-        openGraph={{
-          type: "article",
-          url: url,
-          title: title,
-          description: post.excerpt,
-          images: [{ url: post.feature_image }],
-        }}
+      <Helmet
+        meta={[
+          {
+            name: "twitter:creator",
+            content: primary_author.twitter && `@${primary_author.twitter}`,
+          },
+          { name: "twitter:card", content: "summary_large_image" },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "article" },
+          { property: "og:title", content: title },
+          { property: "og:description", content: post.excerpt },
+          {
+            property: "og:image",
+            content: `${siteUrl}${imageData?.images?.fallback?.src}`,
+          },
+        ]}
+        link={[{ rel: "canonical", href: url }]}
       />
 
       <main className="main-wrap">
@@ -321,6 +330,11 @@ export default Post;
 
 export const query = graphql`
   query BlogPostBySlug($slug: String!, $tags: [String]) {
+    site {
+      siteMetadata {
+        siteUrl
+      }
+    }
     post: markdownRemark(fields: { slug: { eq: $slug } }) {
       fields {
         slug
@@ -352,6 +366,7 @@ export const query = graphql`
           }
         }
       }
+      excerpt
       html
     }
     relatedPosts: allMarkdownRemark(

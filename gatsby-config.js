@@ -12,14 +12,18 @@ module.exports = {
     logo: "/images/logo.png",
 
     social: {
-      twitter: "theGeeksCreed",
-      facebook: "theGeeksCreed",
+      twitter: "GeeksCreedHQ",
+      facebook: "GeeksCreedHQ",
     },
   },
 
   mapping: {
     "MarkdownRemark.frontmatter.authors": `AuthorsYaml.id`,
     "MarkdownRemark.frontmatter.tags": `TagsYaml.id`,
+  },
+
+  flags: {
+    // FAST_DEV: false,
   },
 
   plugins: [
@@ -104,9 +108,8 @@ module.exports = {
       },
     },
 
-    "gatsby-plugin-next-seo",
-
     // "gatsby-plugin-webpack-bundle-analyser-v2",
+
 
     {
       resolve: "gatsby-plugin-google-analytics",

@@ -1,7 +1,6 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useMemo } from "react";
 import { graphql, useStaticQuery } from "gatsby";
 import { Helmet } from "react-helmet";
-import { GatsbySeo, SocialProfileJsonLd } from "gatsby-plugin-next-seo";
 // import AOS from "aos";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -55,29 +54,22 @@ const Layout = ({ title = "", children }) => {
     ? `${title} | ${siteMetadata.title}`
     : `${siteMetadata.title} - ${siteMetadata.description}`;
 
+  const ldJson = useMemo(() => {
+    const json = {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      name: siteMetadata.title,
+      url: siteMetadata.siteUrl,
+      sameAs: [
+        `http://www.facebook.com/${siteMetadata.social.facebook}`,
+        `http://www.twitter.com/${siteMetadata.social.twitter}`,
+      ],
+    };
+    return JSON.stringify(json);
+  }, []);
+
   return (
     <Fragment>
-      <GatsbySeo
-        description={siteMetadata.description}
-        openGraph={{
-          site_name: siteMetadata.title,
-          description: siteMetadata.description,
-        }}
-        twitter={{
-          site: `@${siteMetadata.social.twitter}`,
-        }}
-      />
-
-      <SocialProfileJsonLd
-        type="Organization"
-        name={siteMetadata.title}
-        url={siteMetadata.siteUrl}
-        sameAs={[
-          `http://www.facebook.com/${siteMetadata.social.facebook}`,
-          `http://www.twitter.com/${siteMetadata.social.twitter}`,
-        ]}
-      />
-
       <Helmet>
         <html lang="en" />
 
@@ -98,6 +90,13 @@ const Layout = ({ title = "", children }) => {
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
           ></script>
         )} */}
+
+        <meta name="description" content={siteMetadata.description} />
+        <meta name="og:site_name" content={siteMetadata.title} />
+        <meta name="og:description" content={siteMetadata.description} />
+        <meta name="twitter:site" content={siteMetadata.social.twitter} />
+
+        <script type="application/ld+json">{ldJson}</script>
       </Helmet>
 
       <Header siteMetadata={site.siteMetadata} />
