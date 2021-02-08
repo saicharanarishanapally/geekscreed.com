@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo } from "react";
+import React, { Fragment, Suspense, useEffect, useMemo, useState } from "react";
 import { graphql, useStaticQuery } from "gatsby";
 import { Helmet } from "react-helmet";
 // import AOS from "aos";
@@ -11,6 +11,8 @@ import "../styles/app.scss";
 import "../styles/overrides.css";
 
 const AD_SENSE_CLIENT = process.env.GATSBY_GOOGLE_AD_SENSE_CLIENT;
+
+const Search = React.lazy(() => import("./Search"));
 
 const Layout = ({ title = "", children }) => {
   useEffect(() => {
@@ -48,6 +50,8 @@ const Layout = ({ title = "", children }) => {
     }
   `);
 
+  const [showSearch, setShowSearch] = useState(false);
+
   const { siteMetadata } = site;
 
   const pageTitle = title
@@ -69,6 +73,10 @@ const Layout = ({ title = "", children }) => {
     };
     return JSON.stringify(json);
   }, []);
+
+  const toggleSearch = () => {
+    setShowSearch((showSearch) => !showSearch);
+  };
 
   return (
     <Fragment>
@@ -99,11 +107,19 @@ const Layout = ({ title = "", children }) => {
         <meta name="twitter:site" content={siteMetadata.social.twitter} />
 
         <script type="application/ld+json">{`${organizationLdJson}`}</script>
+
+        <body className={showSearch ? "no-scroll-y" : ""} />
       </Helmet>
 
-      <Header siteMetadata={site.siteMetadata} />
+      <Header siteMetadata={site.siteMetadata} onSearchClick={toggleSearch} />
 
       {children}
+
+      {showSearch && (
+        <Suspense fallback={null}>
+          <Search onClose={toggleSearch} />
+        </Suspense>
+      )}
 
       <Footer siteMetadata={site.siteMetadata} />
     </Fragment>

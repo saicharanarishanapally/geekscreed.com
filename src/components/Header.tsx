@@ -405,10 +405,13 @@ const Header = (props) => {
               </nav>
 
               <div className="m-nav__right">
-                {/* <button className="m-icon-button in-menu-main js-open-search">
-              aria-label="{{t "Open search"}}"
-              <span className="icon-search" aria-hidden="true"></span>
-              </button> */}
+                <button
+                  className="m-icon-button in-menu-main js-open-search"
+                  aria-label="Open search"
+                  onClick={props.onSearchClick}
+                >
+                  <span className="icon-search" aria-hidden="true"></span>
+                </button>
                 <TooltipWrapper content="Toggle dark mode">
                   <div className="m-toggle-darkmode js-tooltip" tabIndex={0}>
                     {/* data-tippy-content="{{t "Toggle dark mode"}}" */}
