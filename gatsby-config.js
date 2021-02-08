@@ -2,20 +2,10 @@ require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
 
-module.exports = {
-  siteMetadata: {
-    title: "GeeksCreed",
-    siteUrl: "https://geekscreed.com",
-    description: "Tech Blog or Geeks and Hobbyists 💻",
-    coverImage: "/images/cover-image.jpg",
-    icon: "/images/icon.png",
-    logo: "/images/logo.png",
+const siteMetadata = require("./siteMetadata.json");
 
-    social: {
-      twitter: "GeeksCreedHQ",
-      facebook: "GeeksCreedHQ",
-    },
-  },
+module.exports = {
+  siteMetadata,
 
   mapping: {
     "MarkdownRemark.frontmatter.authors": `AuthorsYaml.id`,
@@ -165,8 +155,6 @@ module.exports = {
       },
     },
 
-    "gatsby-plugin-remove-serviceworker",
-
     {
       resolve: `gatsby-plugin-sitemap`,
       options: {
@@ -175,7 +163,6 @@ module.exports = {
     },
 
     // "gatsby-plugin-webpack-bundle-analyser-v2",
-
 
     {
       resolve: "gatsby-plugin-google-analytics",
