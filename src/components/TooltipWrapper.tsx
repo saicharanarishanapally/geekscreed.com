@@ -1,5 +1,7 @@
 import React, { Fragment, lazy, Suspense } from "react";
 
+import "tippy.js/dist/tippy.css";
+
 const Tippy = lazy(() => import("@tippyjs/react"));
 
 const TooltipWrapper = ({ children, ...props }) => {

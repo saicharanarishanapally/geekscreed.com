@@ -26,7 +26,11 @@ const Search = (props) => {
 
   const renderResult = (item) => (
     <article key={item.id} className="m-result">
-      <Link to={`blog/${item.slug}`} className="m-result__link">
+      <Link
+        to={`/blog${item.path}`}
+        onClick={props.onClose}
+        className="m-result__link"
+      >
         <h3 className="m-result__title">{item.title}</h3>
         <span className="m-result__date">{item.published_at}</span>
       </Link>

@@ -78,6 +78,7 @@ export const PageProgressButton = () => {
   return (
     <button
       className="m-icon-button filled in-share progress js-scrolltop"
+      aria-label="Scroll to top"
       onClick={handleScrollToTopClick}
     >
       <span className="icon-arrow-top" aria-hidden="true"></span>

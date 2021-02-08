@@ -22,7 +22,7 @@ const loadPolyfills = async () => {
 };
 
 const Post = (props) => {
-  const { data, location } = props;
+  const { data } = props;
 
   const { post, relatedPosts, site } = data;
 
@@ -309,6 +309,7 @@ const Post = (props) => {
                   <TooltipWrapper content="Load comments">
                     <button
                       className="m-icon-button filled as-load-comments js-tooltip js-load-comments"
+                      aria-label="Load Comments"
                       onClick={handleLoadCommentsClick}
                     >
                       <span className="icon-comments"></span>

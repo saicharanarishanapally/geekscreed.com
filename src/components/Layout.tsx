@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet";
 import Header from "./Header";
 import Footer from "./Footer";
 
-import "tippy.js/dist/tippy.css";
 import "../styles/fonts.css";
 import "../styles/app.scss";
 import "../styles/overrides.css";
