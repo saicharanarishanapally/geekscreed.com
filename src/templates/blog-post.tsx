@@ -53,7 +53,7 @@ const Post = (props) => {
     triggerOnce: true,
   });
 
-  let url = location.href;
+  let url = `${siteUrl}/blog${post.fields.slug}`;
 
   const title = post.frontmatter.title;
 
@@ -78,6 +78,20 @@ const Post = (props) => {
 
   const imageData = getImage(post.frontmatter.feature_image);
 
+  const heroImage = `${siteUrl}${imageData?.images?.fallback?.src}`;
+
+  const articleLdJson = useMemo(() => {
+    const json = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: title,
+      image: [heroImage],
+      datePublished: post.frontmatter.published_at,
+      // dateModified: "2015-02-05T09:20:00+08:00",
+    };
+    return JSON.stringify(json);
+  }, []);
+
   return (
     <Layout title={title}>
       <Helmet
@@ -93,11 +107,13 @@ const Post = (props) => {
           { property: "og:description", content: post.excerpt },
           {
             property: "og:image",
-            content: `${siteUrl}${imageData?.images?.fallback?.src}`,
+            content: heroImage,
           },
         ]}
         link={[{ rel: "canonical", href: url }]}
-      />
+      >
+        <script type="application/ld+json">{articleLdJson}</script>
+      </Helmet>
 
       <main className="main-wrap">
         <article>

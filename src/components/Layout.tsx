@@ -54,12 +54,14 @@ const Layout = ({ title = "", children }) => {
     ? `${title} | ${siteMetadata.title}`
     : `${siteMetadata.title} - ${siteMetadata.description}`;
 
-  const ldJson = useMemo(() => {
+  const organizationLdJson = useMemo(() => {
     const json = {
       "@context": "http://schema.org",
       "@type": "Organization",
       name: siteMetadata.title,
       url: siteMetadata.siteUrl,
+      description: siteMetadata.description,
+      logo: `${siteMetadata.siteUrl}/icon.png`,
       sameAs: [
         `http://www.facebook.com/${siteMetadata.social.facebook}`,
         `http://www.twitter.com/${siteMetadata.social.twitter}`,
@@ -96,7 +98,7 @@ const Layout = ({ title = "", children }) => {
         <meta name="og:description" content={siteMetadata.description} />
         <meta name="twitter:site" content={siteMetadata.social.twitter} />
 
-        <script type="application/ld+json">{ldJson}</script>
+        <script type="application/ld+json">{`${organizationLdJson}`}</script>
       </Helmet>
 
       <Header siteMetadata={site.siteMetadata} />
