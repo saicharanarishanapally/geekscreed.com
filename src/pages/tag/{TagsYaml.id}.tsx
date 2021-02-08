@@ -53,7 +53,12 @@ export default Tag;
 export const query = graphql`
   query BlogPostsUnderTag($id: String!) {
     posts: allMarkdownRemark(
-      filter: { frontmatter: { tags: { elemMatch: { id: { eq: $id } } } } }
+      filter: {
+        frontmatter: {
+          tags: { elemMatch: { id: { eq: $id } } }
+          draft: { ne: true }
+        }
+      }
       sort: { fields: frontmatter___published_at, order: DESC }
     ) {
       nodes {

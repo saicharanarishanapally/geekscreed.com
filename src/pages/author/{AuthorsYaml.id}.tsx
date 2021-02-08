@@ -118,7 +118,12 @@ export default Author;
 export const query = graphql`
   query BlogPostsByAuthor($id: String!) {
     posts: allMarkdownRemark(
-      filter: { frontmatter: { authors: { elemMatch: { id: { eq: $id } } } } }
+      filter: {
+        frontmatter: {
+          draft: { ne: true }
+          authors: { elemMatch: { id: { eq: $id } } }
+        }
+      }
       sort: { fields: frontmatter___published_at, order: DESC }
     ) {
       nodes {

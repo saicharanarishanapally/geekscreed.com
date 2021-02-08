@@ -70,7 +70,7 @@ export const query = graphql`
     }
 
     featuredPosts: allMarkdownRemark(
-      filter: { frontmatter: { featured: { eq: true } } }
+      filter: { frontmatter: { featured: { eq: true }, draft: { ne: true } } }
       sort: { fields: frontmatter___published_at, order: DESC }
       limit: 5
     ) {
@@ -83,6 +83,7 @@ export const query = graphql`
 
     posts: allMarkdownRemark(
       limit: 10
+      filter: { frontmatter: { draft: { ne: true } } }
       sort: { fields: frontmatter___published_at, order: DESC }
     ) {
       edges {

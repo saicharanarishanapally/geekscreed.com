@@ -39,6 +39,7 @@ const Header = (props) => {
       posts: allMarkdownRemark(
         limit: 4
         sort: { fields: frontmatter___published_at, order: DESC }
+        filter: { frontmatter: { draft: { ne: true } } }
       ) {
         edges {
           node {
