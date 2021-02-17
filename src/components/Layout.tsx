@@ -14,6 +14,10 @@ const AD_SENSE_CLIENT = process.env.GATSBY_GOOGLE_AD_SENSE_CLIENT;
 const Search = React.lazy(() => import("./Search"));
 
 const Layout = ({ title = "", children }) => {
+  const [theme, setTheme] = useState("light");
+
+  const [showSearch, setShowSearch] = useState(false);
+
   useEffect(() => {
     import("aos").then((AOS) => {
       AOS.init({
@@ -22,6 +26,20 @@ const Layout = ({ title = "", children }) => {
       });
     });
 
+    const currentSavedTheme = localStorage.getItem("theme");
+
+    if (currentSavedTheme) {
+      setTheme(currentSavedTheme);
+    } else {
+      const darkModeMatcher = window?.matchMedia(
+        "(prefers-color-scheme: dark)"
+      );
+
+      if (darkModeMatcher?.matches) {
+        setTheme("dark");
+      }
+    }
+
     // To reset to scroll position
     window.scrollTo({
       left: 0,
@@ -29,6 +47,35 @@ const Layout = ({ title = "", children }) => {
       behavior: "auto",
     });
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    document.querySelector("html").dataset.theme = theme;
+
+    const lightThemeStylesheet = document.querySelector(
+      'link[href$="code-theme-light.css"]'
+    );
+
+    const darkThemeStylesheet = document.querySelector(
+      'link[href$="code-theme-dark.css"]'
+    );
+
+    if (theme === "light") {
+      import(
+        /* webpackChunkName: "code-theme-light" */ "prism-themes/themes/prism-coldark-cold.css"
+      ).then(() => {
+        if (darkThemeStylesheet) darkThemeStylesheet.disabled = true;
+        if (lightThemeStylesheet) lightThemeStylesheet.disabled = false;
+      });
+    } else {
+      import(
+        /* webpackChunkName: "code-theme-dark" */ "prism-themes/themes/prism-darcula.css"
+      ).then(() => {
+        if (lightThemeStylesheet) lightThemeStylesheet.disabled = true;
+        if (darkThemeStylesheet) darkThemeStylesheet.disabled = false;
+      });
+    }
+  }, [theme]);
 
   const { site } = useStaticQuery(graphql`
     query SiteMetaData {
@@ -48,8 +95,6 @@ const Layout = ({ title = "", children }) => {
       }
     }
   `);
-
-  const [showSearch, setShowSearch] = useState(false);
 
   const { siteMetadata } = site;
 
@@ -75,6 +120,11 @@ const Layout = ({ title = "", children }) => {
 
   const toggleSearch = () => {
     setShowSearch((showSearch) => !showSearch);
+  };
+
+  const toggleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.checked ? "dark" : "light";
+    setTheme(value);
   };
 
   return (
@@ -110,7 +160,12 @@ const Layout = ({ title = "", children }) => {
         <body className={showSearch ? "no-scroll-y" : ""} />
       </Helmet>
 
-      <Header siteMetadata={site.siteMetadata} onSearchClick={toggleSearch} />
+      <Header
+        theme={theme}
+        siteMetadata={site.siteMetadata}
+        onSearchClick={toggleSearch}
+        onThemeChange={toggleTheme}
+      />
 
       {children}
 

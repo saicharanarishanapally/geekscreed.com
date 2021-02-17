@@ -138,6 +138,17 @@ module.exports = {
               showCaptions: true,
             },
           },
+          {
+            resolve: "gatsby-remark-copy-linked-files",
+          },
+
+          {
+            resolve: `gatsby-remark-prismjs`,
+            options: {
+              classPrefix: "lang-",
+              noInlineHighlight: true,
+            },
+          },
         ],
       },
     },

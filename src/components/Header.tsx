@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { graphql, useStaticQuery, Link } from "gatsby";
-import Tippy from "@tippyjs/react";
 import classnames from "classnames";
 import { GatsbyImage, getImage, StaticImage } from "gatsby-plugin-image";
 import shave from "shave";
@@ -14,9 +13,7 @@ import TooltipWrapper from "./TooltipWrapper";
 const SITE_LOGO = "../../content/assets/images/logo.png";
 
 const Header = (props) => {
-  const { siteMetadata } = props;
-
-  const [theme, setTheme] = useState("light");
+  const { siteMetadata, theme, onThemeChange } = props;
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -76,20 +73,6 @@ const Header = (props) => {
   `);
 
   useEffect(() => {
-    const currentSavedTheme = localStorage.getItem("theme");
-
-    if (currentSavedTheme) {
-      setTheme(currentSavedTheme);
-    } else {
-      const darkModeMatcher = window?.matchMedia(
-        "(prefers-color-scheme: dark)"
-      );
-
-      if (darkModeMatcher?.matches) {
-        setTheme("dark");
-      }
-    }
-
     const recentSlider = new Glide(".js-recent-slider", {
       type: "slider",
       rewind: false,
@@ -125,16 +108,6 @@ const Header = (props) => {
 
     recentSlider.mount({ Swipe, Breakpoints });
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-    document.querySelector("html").dataset.theme = theme;
-  }, [theme]);
-
-  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.checked ? "dark" : "light";
-    setTheme(value);
-  };
 
   const handleMoreClick = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -297,13 +270,13 @@ const Header = (props) => {
             {title}
           </Link>
         )}
-        {/* <button
-        className="m-icon-button in-mobile-topbar js-open-search"
-        aria-label="Open search"
-      >
-        <span className="icon-search" aria-hidden="true"></span>
-      </button> */}
-        <div className="m-icon-button in-mobile-topbar js-open-search"></div>
+        <button
+          className="m-icon-button in-mobile-topbar js-open-search"
+          aria-label="Open search"
+          onClick={props.onSearchClick}
+        >
+          <span className="icon-search" aria-hidden="true"></span>
+        </button>
       </div>
 
       <div
@@ -314,15 +287,18 @@ const Header = (props) => {
         <button
           className="m-icon-button outlined as-close-menu js-close-menu"
           onClick={toggleMobileMenu}
+          aria-label="Close menu"
         >
-          {/* aria-label="{{t "Close menu"}}" */}
           <span className="icon-close"></span>
         </button>
         <div className="m-menu__main" data-aos="fade-down">
           <div className="l-wrapper">
             <div className="m-nav js-main-nav">
-              <nav className="m-nav__left js-main-nav-left" role="navigation">
-                {/* aria-label="{{t "Main menu"}}" */}
+              <nav
+                className="m-nav__left js-main-nav-left"
+                role="navigation"
+                aria-label="Main menu"
+              >
                 <ul>
                   {logo ? (
                     <li className="only-desktop">
@@ -424,7 +400,7 @@ const Header = (props) => {
                       type="checkbox"
                       className="js-toggle-darkmode"
                       checked={theme === "dark"}
-                      onChange={handleThemeChange}
+                      onChange={onThemeChange}
                     />
                     <div>
                       <span

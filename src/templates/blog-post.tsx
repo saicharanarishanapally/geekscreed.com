@@ -12,7 +12,6 @@ import Layout from "../components/Layout";
 import RelatedPosts from "../components/RelatedPosts";
 import TooltipWrapper from "../components/TooltipWrapper";
 
-import "prism-themes/themes/prism-darcula.css";
 import "../styles/post.scss";
 
 const loadPolyfills = async () => {
