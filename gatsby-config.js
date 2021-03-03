@@ -4,6 +4,8 @@ require("dotenv").config({
 
 const siteMetadata = require("./siteMetadata.json");
 
+const isProduction = process.env.NODE_ENV === "production";
+
 module.exports = {
   siteMetadata,
 
@@ -175,12 +177,16 @@ module.exports = {
 
     // "gatsby-plugin-webpack-bundle-analyser-v2",
 
-    {
-      resolve: "gatsby-plugin-google-analytics",
-      options: {
-        trackingId: process.env.GATSBY_SITE_GOOGLE_ANALYTICS,
-      },
-    },
+    ...(isProduction
+      ? [
+          {
+            resolve: "gatsby-plugin-google-analytics",
+            options: {
+              trackingId: process.env.GATSBY_SITE_GOOGLE_ANALYTICS,
+            },
+          },
+        ]
+      : []),
 
     // {
     //   resolve: `gatsby-plugin-google-adsense`,
