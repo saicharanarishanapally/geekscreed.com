@@ -5,7 +5,7 @@ const Footer = ({ siteMetadata }) => {
     <footer className="m-footer">
       <div className="m-footer__content">
         <p className="m-footer-copyright">
-          <span>{siteMetadata.title} &copy; 2020</span>
+          <span>{siteMetadata.title} &copy; 2021</span>
           <span>&nbsp; &bull; &nbsp;</span>
 
           <span>
